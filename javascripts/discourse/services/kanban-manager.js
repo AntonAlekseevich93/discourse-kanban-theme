@@ -101,16 +101,7 @@ export default class KanbanManager extends Service {
     }
 
     if (descriptor === "default") {
-      if (!this.discoveryCategory) {
-        descriptor = "categories";
-      } else if (
-        this.discoveryCategory.subcategories &&
-        this.discoveryCategory.subcategories.length > 0
-      ) {
-        descriptor = "categories";
-      } else {
         descriptor = "tags";
-      }
     }
 
     return descriptor.split(":");
