@@ -7,7 +7,7 @@ export default function buildTagLists({ kanbanManager, param }) {
   }
 
   const tagTranslations = {
-    "open": "Открыто",
+    "planned": "Планируется",
     "todo": "Сделать",
     "doing": "В работе",
     "done": "Готово"
@@ -25,8 +25,9 @@ export default function buildTagLists({ kanbanManager, param }) {
           },
         };
       } else {
+        const displayTitle = tagTranslations[tag] || `#${tag}`;
         return {
-          title: `#${tag}`,
+          title: displayTitle,
           params: {
             tags: [tag],
           },
