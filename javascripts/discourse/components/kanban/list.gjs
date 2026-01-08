@@ -10,6 +10,7 @@ import { popupAjaxError } from "discourse/lib/ajax-error";
 import Topic from "discourse/models/topic";
 import { i18n } from "discourse-i18n";
 import DiscourseKanbanCard from "./card";
+import { htmlSafe } from "@ember/template";
 
 function removedElements(before, after) {
   if (!before) {
@@ -59,6 +60,13 @@ export default class KanbanList extends Component {
 
   get renderedTitle() {
     return this.args.definition.title;
+  }
+
+  get customStyle() {
+    const colors = settings.kanban_list_colors.split(",").map(c => c.trim());
+    const color = colors[this.args.index] || "var(--primary-low)";
+    // 3. Формируем CSS переменную прямо на элементе
+    return htmlSafe(`--kanban-list-color: ${color};`);
   }
 
   @action
