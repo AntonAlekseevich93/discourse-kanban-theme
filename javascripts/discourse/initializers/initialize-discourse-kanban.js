@@ -73,7 +73,7 @@ export default {
 
               return this.router
                 .transitionTo("discovery.latestCategory", model.category.id, {
-                  queryParams: { board: "default" },
+                  queryParams: { board: "tags" },
                 })
                 .finally(() => {
                   if (newTopicParams) {
