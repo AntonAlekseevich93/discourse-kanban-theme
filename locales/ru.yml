@@ -10,7 +10,7 @@ ru:
   confirm_close: Закрыть тему '%{title}'?
   confirm_open: Снова открыть тему '%{title}'?
   confirm_change_category: Переместить тему '%{title}'?
-  menu_label: "Доска"
+  menu_label: "Дорожная карта"
   copy_link: "Копировать ссылку в буфер обмена"
   configure: "Настроить канбан-доску"
   fullscreen: "Полноэкранный режим"
