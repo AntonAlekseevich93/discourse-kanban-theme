@@ -17,7 +17,38 @@ html.kanban-active {
     display: none;
   }
 }
+// 1. СКРУГЛЕНИЕ КАРТОЧЕК (из настройки)
+.discourse-kanban-list .topic-card {
+  // unquote убирает кавычки, если они есть
+  border-radius: unquote($kanban_card_radius); 
+  border: 1px solid var(--primary-low);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
 
+// 2. ЦВЕТА КОЛОНОК (динамические)
+.discourse-kanban-list {
+  // Переменная --kanban-list-color приходит из JS (list.js)
+  
+  // Цветная полоска сверху
+  border-top: 5px solid var(--kanban-list-color); 
+  
+  // Фон колонки: берем цвет колонки и смешиваем с белым (делаем очень бледным)
+  // Внимание: color-mix работает в современных браузерах (Chrome 111+, Safari 16.2+, FF 88+)
+  background-color: color-mix(in srgb, var(--kanban-list-color), transparent 90%);
+  
+  // Если браузер старый и не умеет color-mix, будет просто серый фон
+  @supports not (background: color-mix(in srgb, red, blue)) {
+    background-color: var(--primary-very-low);
+  }
+
+  // Также красим заголовок в цвет колонки
+  .list-title {
+    color: var(--kanban-list-color);
+    // Немного затемним текст, чтобы читался лучше
+    filter: brightness(0.8); 
+  }
+}
 .discourse-kanban {
   position: relative;
 
