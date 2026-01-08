@@ -7,8 +7,8 @@ export default function buildTagLists({ kanbanManager, param }) {
   }
 
   const tagTranslations = {
+    "backlog": "Бэклог",
     "planned": "Планируется",
-    "todo": "Сделать",
     "doing": "В работе",
     "done": "Готово"
   };
