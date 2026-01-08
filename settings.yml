@@ -40,6 +40,6 @@ kanban_card_radius:
   type: string
   description: "Радиус скругления карточек (например: 8px или 12px)"
 kanban_list_colors:
-  default: "#3498db,#e67e22,#2ecc71,#9b59b6"
+  default: "#8a8a8a,#3498db,#ff8238,#2ecc71"
   type: string
   description: "Цвета колонок через запятую (HEX коды). Применяются по порядку слева направо."
