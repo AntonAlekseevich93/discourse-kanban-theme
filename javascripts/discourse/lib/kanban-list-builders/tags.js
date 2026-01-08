@@ -6,6 +6,13 @@ export default function buildTagLists({ kanbanManager, param }) {
     tags.push(...kanbanManager.discoveryTopTags);
   }
 
+  const tagTranslations = {
+    "open": "Открыто",
+    "todo": "Сделать",
+    "doing": "В работе",
+    "done": "Готово"
+  };
+
   const lists = [];
 
   lists.push(
