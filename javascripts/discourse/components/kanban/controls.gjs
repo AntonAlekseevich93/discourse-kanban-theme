@@ -33,14 +33,14 @@ export default class KanbanControls extends Component {
         as |menu|
       >
         <ul class="kanban-controls">
-          <li>
-            <DButton
-              @icon="filter"
-              @action={{fn this.openSettings menu}}
-              @label={{themePrefix "configure"}}
-              class="configure-kanban-button btn-transparent"
-            />
-          </li>
+          // <li>
+          //  <DButton
+          //    @icon="filter"
+         //     @action={{fn this.openSettings menu}}
+          //    @label={{themePrefix "configure"}}
+          //    class="configure-kanban-button btn-transparent"
+         //   />
+         // </li>
           <li>
             <CopyLinkButton />
           </li>
