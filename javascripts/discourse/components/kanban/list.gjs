@@ -64,7 +64,7 @@ export default class KanbanList extends Component {
 
   // БЕЗОПАСНЫЙ КОД ПОЛУЧЕНИЯ ЦВЕТОВ
   get customStyle() {
-    let rawColors = "#3498db,#e67e22,#2ecc71,#9b59b6"; // Дефолтные цвета
+    let rawColors = "#8a8a8a,#3498db,#ff8238,#2ecc71"; // Дефолтные цвета
 
     // Проверяем, существуют ли settings, чтобы не крашить сайт
     if (typeof settings !== "undefined" && settings.kanban_list_colors) {
