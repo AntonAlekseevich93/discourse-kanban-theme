@@ -101,7 +101,7 @@ export default class KanbanManager extends Service {
     }
 
     if (descriptor === "default") {
-        descriptor = "tags";
+        descriptor = "tags:planned,in-progress,done";
     }
 
     return descriptor.split(":");
