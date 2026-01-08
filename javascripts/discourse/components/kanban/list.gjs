@@ -284,6 +284,7 @@ export default class KanbanList extends Component {
         "discourse-kanban-list"
         (if this.acceptDrag "accept-drag")
       }}
+      style={{this.customStyle}}
       {{on "dragover" this.dragOver}}
       {{on "dragleave" this.dragLeave}}
       {{on "drop" this.drop}}
