@@ -1,5 +1,4 @@
 import Component from "@glimmer/component";
-import { fn } from "@ember/helper";
 import { action } from "@ember/object";
 import { service } from "@ember/service";
 import DButton from "discourse/components/d-button";
@@ -7,7 +6,8 @@ import bodyClass from "discourse/helpers/body-class";
 import { i18n } from "discourse-i18n";
 import DMenu from "float-kit/components/d-menu";
 import CopyLinkButton from "./copy-link-button";
-import KanbanOptionsModal from "./modal/options";
+// Импорт модалки больше не нужен, раз мы убрали кнопку
+// import KanbanOptionsModal from "./modal/options"; 
 
 export default class KanbanControls extends Component {
   @service modal;
@@ -18,12 +18,8 @@ export default class KanbanControls extends Component {
     this.kanbanManager.fullscreen = !this.kanbanManager.fullscreen;
   }
 
-  @action
-  openSettings(menu) {
-    this.modal.show(KanbanOptionsModal);
-    menu.close();
-  }
-
+  // Метод openSettings можно удалить, так как кнопки больше нет
+  
   <template>
     {{#if this.kanbanManager.active}}
       <DMenu
@@ -33,14 +29,11 @@ export default class KanbanControls extends Component {
         as |menu|
       >
         <ul class="kanban-controls">
-          // <li>
-          //  <DButton
-          //    @icon="filter"
-         //     @action={{fn this.openSettings menu}}
-          //    @label={{themePrefix "configure"}}
-          //    class="configure-kanban-button btn-transparent"
-         //   />
-         // </li>
+          {{!-- 
+             МЫ ПОЛНОСТЬЮ УДАЛИЛИ КНОПКУ НАСТРОЕК ОТСЮДА.
+             Теперь пользователь физически не может открыть настройки.
+          --}}
+          
           <li>
             <CopyLinkButton />
           </li>
