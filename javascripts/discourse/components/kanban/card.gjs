@@ -130,6 +130,13 @@ export default class KanbanCard extends Component {
           </div>
         {{/if}}
 
+        {{#if @topic.like_count}}
+          <div class="topic-likes">
+            {{icon "heart"}}
+            <span class="likes-count">{{@topic.like_count}}</span>
+          </div>
+        {{/if}}
+
         {{#unless this.showDetailed}}
           <div class="topic-assignments">
             {{#if @topic.assigned_to_user.username}}
