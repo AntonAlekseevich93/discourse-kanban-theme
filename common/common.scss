@@ -17,45 +17,10 @@ html.kanban-active {
     display: none;
   }
 }
-// 1. СКРУГЛЕНИЕ КАРТОЧЕК (из настройки)
-.discourse-kanban-list .topic-card {
-  // unquote убирает кавычки, если они есть
-  border-radius: unquote($kanban_card_radius); 
-  border: 1px solid var(--primary-low);
-  overflow: hidden;
-  margin-bottom: 10px;
-}
 
-// 2. ЦВЕТА КОЛОНОК (динамические)
-.discourse-kanban-list {
-  // Переменная --kanban-list-color приходит из JS (list.js)
-  
-  // Цветная полоска сверху
-  border-top: 5px solid var(--kanban-list-color); 
-  
-  // Фон колонки: берем цвет колонки и смешиваем с белым (делаем очень бледным)
-  // Внимание: color-mix работает в современных браузерах (Chrome 111+, Safari 16.2+, FF 88+)
-  background-color: color-mix(in srgb, var(--kanban-list-color), transparent 90%);
-  
-  // Если браузер старый и не умеет color-mix, будет просто серый фон
-  @supports not (background: color-mix(in srgb, red, blue)) {
-    background-color: var(--primary-very-low);
-  }
-
-  // Также красим заголовок в цвет колонки
-  .list-title {
-    color: var(--kanban-list-color);
-    // Немного затемним текст, чтобы читался лучше
-    filter: brightness(0.8); 
-  }
-}
 .discourse-kanban {
   position: relative;
-
-  // The amount of space available without causing the page to scroll:
   --desired-height: calc(100vh - var(--kanban-offset-top));
-
-  // Use the desired height, unless it is smaller than 500px
   height: max(var(--desired-height), 500px);
   padding-bottom: 10px;
   overflow-x: scroll;
@@ -87,7 +52,6 @@ html.kanban-active {
     }
   }
 
-  // No sidebar. Make container fill the viewport width and center lists
   body:not(.has-sidebar-page) &:not(.kanban-fullscreen) {
     width: 100vw;
     left: calc(-50vw + 50%);
@@ -100,7 +64,6 @@ html.kanban-active {
       &:first-of-type {
         margin-left: auto;
       }
-
       &:last-of-type {
         margin-right: auto;
       }
@@ -114,8 +77,23 @@ html.kanban-active {
   gap: 0 10px;
 
   .discourse-kanban-list {
-    background: var(--primary-100);
-    border: 1px solid var(--primary-low);
+    // --- НАЧАЛО: ДИНАМИЧЕСКИЕ ЦВЕТА КОЛОНОК ---
+    // Убрали старый background и добавили логику с цветами
+    
+    // Переменная --kanban-list-color приходит из JS (если не определена - будет серый)
+    background-color: var(--primary-100); // Фоллбэк для старых браузеров
+    
+    // Современный способ (смешиваем цвет колонки с прозрачностью 90%)
+    background-color: color-mix(in srgb, var(--kanban-list-color, var(--primary-low)), transparent 90%);
+    
+    // Цветная полоска сверху
+    border-top: 5px solid var(--kanban-list-color, transparent);
+    
+    border-left: 1px solid var(--primary-low);
+    border-right: 1px solid var(--primary-low);
+    border-bottom: 1px solid var(--primary-low);
+    // --- КОНЕЦ: ДИНАМИЧЕСКИЕ ЦВЕТА ---
+
     display: flex;
     flex-direction: column;
 
@@ -138,6 +116,10 @@ html.kanban-active {
       font-weight: bold;
       margin-left: calc(11px + 0.15em);
       font-size: $font-up-1;
+      
+      // Красим заголовок в цвет колонки
+      color: var(--kanban-list-color);
+      filter: brightness(0.8);
     }
 
     .topics {
@@ -155,6 +137,11 @@ html.kanban-active {
       box-shadow: var(--primary-low) 0 3px 6px;
       border: 1px solid var(--primary-low);
 
+      // --- НАЧАЛО: СКРУГЛЕНИЕ ---
+      border-radius: unquote($kanban_card_radius);
+      overflow: hidden;
+      // --- КОНЕЦ: СКРУГЛЕНИЕ ---
+
       &.dragging {
         background-color: var(--tertiary-low);
       }
@@ -169,6 +156,25 @@ html.kanban-active {
         box-shadow: inset 5px 0 0 0 var(--danger-medium);
         border-left: 0;
         padding-left: 15px;
+      }
+      
+      // Стили для лайков (если ты их добавлял)
+      .topic-likes {
+        display: flex;
+        align-items: center;
+        margin-left: 10px;
+        font-size: var(--font-down-1);
+        color: var(--primary-medium);
+    
+        .d-icon-heart {
+          color: var(--love);
+          margin-right: 4px;
+          font-size: 0.9em;
+        }
+    
+        .likes-count {
+          font-weight: bold;
+        }
       }
 
       .card-row {
