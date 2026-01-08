@@ -12,6 +12,7 @@ import htmlClass from "discourse/helpers/html-class";
 import { i18n } from "discourse-i18n";
 import DiscourseKanbanList from "./list";
 import KanbanOptionsModal from "./modal/options";
+import DiscourseURL from "discourse/lib/url";
 
 const onWindowResize = modifier((element, [callback]) => {
   const wrappedCallback = () => callback(element);
@@ -36,6 +37,23 @@ export default class Kanban extends Component {
   @service modal;
 
   @tracked dragData;
+
+constructor() {
+    super(...arguments);
+
+    // Если текущий режим НЕ "tags", мы силой перекидываем пользователя на URL с тегами
+    if (this.kanbanManager.mode !== "tags") {
+       // Формируем правильную ссылку (например: /latest?board=tags)
+       const href = this.kanbanManager.getBoardUrl({
+         category: this.kanbanManager.discoveryCategory,
+         tag: this.kanbanManager.discoveryTag,
+         descriptor: "tags", 
+       });
+      
+       // Мгновенный редирект
+       DiscourseURL.routeTo(href, { replaceURL: true });
+    }
+  }
 
   @action
   setDragData(data) {
