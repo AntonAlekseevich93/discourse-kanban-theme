@@ -96,6 +96,7 @@ constructor() {
               @definition={{definition}}
               @dragData={{this.dragData}}
               @setDragDataUpstream={{this.setDragData}}
+              @index={{index}}
             />
           {{else}}
             <div class="discourse-kanban-list kanban-empty-state">
