@@ -62,10 +62,23 @@ export default class KanbanList extends Component {
     return this.args.definition.title;
   }
 
+  // БЕЗОПАСНЫЙ КОД ПОЛУЧЕНИЯ ЦВЕТОВ
   get customStyle() {
-    const colors = settings.kanban_list_colors.split(",").map(c => c.trim());
-    const color = colors[this.args.index] || "var(--primary-low)";
-    // 3. Формируем CSS переменную прямо на элементе
+    let rawColors = "#3498db,#e67e22,#2ecc71,#9b59b6"; // Дефолтные цвета
+
+    // Проверяем, существуют ли settings, чтобы не крашить сайт
+    if (typeof settings !== "undefined" && settings.kanban_list_colors) {
+        rawColors = settings.kanban_list_colors;
+    }
+
+    const colors = rawColors.split(",").map(c => c.trim());
+    
+    // Берем индекс или 0, если его нет
+    const idx = this.args.index || 0;
+    
+    // Зацикливаем цвета (если колонок больше, чем цветов)
+    const color = colors[idx % colors.length] || "var(--primary-low)";
+    
     return htmlSafe(`--kanban-list-color: ${color};`);
   }
 
@@ -156,7 +169,8 @@ export default class KanbanList extends Component {
     const thisDefinition = this.args.definition;
 
     let doUpdate = () => {};
-    let requireConfirmation = settings.require_confirmation;
+    // БЕЗОПАСНАЯ ПРОВЕРКА НАСТРОЙКИ
+    let requireConfirmation = (typeof settings !== "undefined") ? settings.require_confirmation : true;
     let confirmationMessage = "";
 
     if (this.kanbanManager.mode === "tags") {
