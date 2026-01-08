@@ -12,7 +12,8 @@ import htmlClass from "discourse/helpers/html-class";
 import { i18n } from "discourse-i18n";
 import DiscourseKanbanList from "./list";
 import KanbanOptionsModal from "./modal/options";
-import DiscourseURL from "discourse/lib/url";
+// DiscourseURL больше не нужен, так как мы убрали редирект
+// import DiscourseURL from "discourse/lib/url"; 
 
 const onWindowResize = modifier((element, [callback]) => {
   const wrappedCallback = () => callback(element);
@@ -38,22 +39,7 @@ export default class Kanban extends Component {
 
   @tracked dragData;
 
-constructor() {
-    super(...arguments);
-
-    // Если текущий режим НЕ "tags", мы силой перекидываем пользователя на URL с тегами
-    if (this.kanbanManager.mode !== "tags") {
-       // Формируем правильную ссылку (например: /latest?board=tags)
-       const href = this.kanbanManager.getBoardUrl({
-         category: this.kanbanManager.discoveryCategory,
-         tag: this.kanbanManager.discoveryTag,
-         descriptor: "tags", 
-       });
-      
-       // Мгновенный редирект
-       DiscourseURL.routeTo(href, { replaceURL: true });
-    }
-  }
+  // КОНСТРУКТОР УДАЛЕН. Логика теперь в kanban-manager.js и initializer.js
 
   @action
   setDragData(data) {
@@ -91,7 +77,8 @@ constructor() {
           </div>
         {{/if}}
         <div class="discourse-kanban-container">
-          {{#each this.kanbanManager.listDefinitions as |definition|}}
+          {{!-- ИСПРАВЛЕНИЕ: Добавлен index в параметры цикла --}}
+          {{#each this.kanbanManager.listDefinitions as |definition index|}}
             <DiscourseKanbanList
               @definition={{definition}}
               @dragData={{this.dragData}}
