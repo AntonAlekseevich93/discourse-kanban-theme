@@ -8,7 +8,8 @@ import DButton from "discourse/components/d-button";
 import DModal from "discourse/components/d-modal";
 import DiscourseURL from "discourse/lib/url";
 import { i18n } from "discourse-i18n";
-import ComboBox from "select-kit/components/combo-box";
+// ComboBox больше не нужен, мы удалили выбор режима
+// import ComboBox from "select-kit/components/combo-box"; 
 import EmailGroupUserChooser from "select-kit/components/email-group-user-chooser";
 import MultiSelect from "select-kit/components/multi-select";
 import TagChooser from "select-kit/components/tag-chooser";
@@ -20,7 +21,11 @@ export default class KanbanOptionsController extends Component {
   @tracked tags = [];
   @tracked usernames = [];
   @tracked categories = [];
-  @tracked mode = "tags";
+  
+  // ПРИНУДИТЕЛЬНО СТАВИМ TAGS
+  @tracked mode = "tags"; 
+
+  // Этот массив можно удалить, так как выбор мы скрываем, но можно и оставить, чтобы не ломать старые ссылки
   modes = [{ id: "tags" }, { id: "categories" }, { id: "assigned" }];
 
   @equal("mode", "tags") isTags;
@@ -29,37 +34,38 @@ export default class KanbanOptionsController extends Component {
 
   constructor() {
     super(...arguments);
-    const [mode, params] = this.kanbanManager.resolvedDescriptorParts;
+    const [currentMode, params] = this.kanbanManager.resolvedDescriptorParts;
 
-    this.mode = mode;
-    if (this.mode === "tags") {
+    // ЛОГИКА ИЗМЕНЕНА:
+    // Мы игнорируем currentMode, который пришел из URL, и всегда работаем в режиме tags.
+    // Если раньше были выбраны теги, подгружаем их. Если нет — список пуст.
+    this.mode = "tags"; 
+
+    if (currentMode === "tags") {
       this.tags = params?.split(",") || [];
-    } else if (this.mode === "categories") {
-      this.categories = params?.split(",").map((v) => parseInt(v, 10)) || [];
-    } else if (this.mode === "assigned") {
-      this.usernames = params?.split(",") || [];
+    } else {
+      // Если пользователь пришел с доски категорий, сбрасываем теги в пустой массив
+      this.tags = [];
     }
+    
+    // Остальные параметры можно не инициализировать, так как мы запрещаем переключение
+    this.categories = [];
+    this.usernames = [];
   }
 
   @action
   apply() {
     let descriptor = "";
+    
+    // Так как this.mode жестко задан как "tags", сработает только этот блок
     if (this.isTags) {
       descriptor += "tags";
       if (this.tags.length > 0) {
         descriptor += `:${this.tags.join(",")}`;
       }
-    } else if (this.isCategories) {
-      descriptor += "categories";
-      if (this.categories.length > 0) {
-        descriptor += `:${this.categories.join(",")}`;
-      }
-    } else if (this.isAssigned) {
-      descriptor += "assigned";
-      if (this.usernames.length > 0) {
-        descriptor += `:${this.usernames}`;
-      }
-    }
+    } 
+    // Блоки else if для категорий и assigned технически не сработают, 
+    // но их можно оставить на всякий случай или удалить для чистоты кода.
 
     let href = this.kanbanManager.getBoardUrl({
       category: this.kanbanManager.discoveryCategory,
@@ -78,49 +84,30 @@ export default class KanbanOptionsController extends Component {
       @closeModal={{@closeModal}}
     >
       <:body>
-        <div class="control-group">
-          <label>{{i18n (themePrefix "modal.mode")}}</label>
-          <ComboBox
-            @content={{this.modes}}
-            @value={{this.mode}}
-            @onChange={{fn (mut this.mode)}}
-            @valueProperty="id"
-            @nameProperty="id"
-            class="kanban-mode-chooser"
-          />
-        </div>
+        {{!-- 
+            УДАЛЕНО: Блок выбора режима (ComboBox). 
+            Теперь пользователь не видит выпадающий список "Mode".
+        --}}
 
         <div class="control-group">
-          <label>{{i18n (themePrefix "modal.lists")}}</label>
-          {{#if this.isTags}}
-            <TagChooser
-              @tags={{this.tags}}
-              @allowCreate={{false}}
-              @everyTag={{true}}
-              @options={{hash
-                filterPlaceholder=(themePrefix "modal.tags_placeholder")
-              }}
-              @unlimitedTagCount={{true}}
-              class="kanban-tag-chooser"
-            />
-          {{else if this.isCategories}}
-            <MultiSelect
-              @content={{this.site.categories}}
-              @value={{this.categories}}
-              @options={{hash
-                filterPlaceholder=(themePrefix "modal.categories_placeholder")
-              }}
-            />
-          {{else if this.isAssigned}}
-            <EmailGroupUserChooser
-              @value={{this.usernames}}
-              @onChange={{fn (mut this.usernames)}}
-              @options={{hash
-                fullWidthWrap=true
-                filterPlaceholder=(themePrefix "modal.usernames_placeholder")
-              }}
-            />
-          {{/if}}
+          {{!-- Меняем лейбл, так как выбора списков нет, есть только выбор тегов --}}
+          <label>{{i18n (themePrefix "modal.lists")}} (Tags)</label>
+          
+          {{!-- 
+            Так как isTags всегда true, рендерим только TagChooser.
+            Остальные условия (MultiSelect, EmailGroupUserChooser) никогда не покажутся.
+          --}}
+          
+          <TagChooser
+            @tags={{this.tags}}
+            @allowCreate={{false}}
+            @everyTag={{true}}
+            @options={{hash
+              filterPlaceholder=(themePrefix "modal.tags_placeholder")
+            }}
+            @unlimitedTagCount={{true}}
+            class="kanban-tag-chooser"
+          />
         </div>
       </:body>
       <:footer>
